@@ -8,7 +8,7 @@ Create a new conda environment using the default `environment.yml`:
 ```
 conda env create --name hyperpool --file=environments.yml
 ```
-Activate the default environment:
+Activate the conda environment:
 ```
 conda activate hyperpool
 ```

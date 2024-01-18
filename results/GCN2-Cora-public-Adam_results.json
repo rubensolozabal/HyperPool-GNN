@@ -1,0 +1,1 @@
+{"experiment": "GCN2-Cora-public-Adam", "loss": 0.9621542692184448, "acc": 0.8460000157356262, "loss_std": 0.11010244488716125, "acc_std": 0.0, "duration": 8.549139976501465}

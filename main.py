@@ -7,11 +7,15 @@ import argparse
 
 import torch
 import numpy as np
+import torch_geometric.transforms as T
 
 from utils import *
 from datasets import get_planetoid_dataset
 from train_eval import run
 from models import get_model
+
+
+PATH_RESULTS = "results/"
 
 def main():
 
@@ -22,7 +26,7 @@ def main():
     parser.add_argument('--model', type=str, default='GCN')
     parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--runs', type=int, default=10)
+    parser.add_argument('--runs', type=int, default=2)
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--weight_decay', type=float, default=0.0005)
@@ -45,11 +49,12 @@ def main():
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(args.seed)
 
-    # Get dataset    
+    # Get dataset
     kwargs_dataset = {
-        'name': args.dataset, 
+        'model_name': args.model,
+        'dataset': args.dataset, 
         'normalize_features': args.normalize_features, 
-        'split': args.split
+        'split': args.split,
     }
     dataset = get_planetoid_dataset(**kwargs_dataset)
 
@@ -72,7 +77,7 @@ def main():
         'lr': args.lr, 
         'weight_decay': args.weight_decay, 
         'early_stopping': args.early_stopping, 
-        'logger': args.logger, 
+        'logger_name': args.logger, 
         'momentum': args.momentum,
         'eps': args.eps,
         'update_freq': args.update_freq,
@@ -84,19 +89,20 @@ def main():
         for param in np.logspace(-3, 0, 10, endpoint=True):
             print(f"{args.hyperparam}: {param}")
             kwargs_run[args.hyperparam] = param
-            run(**kwargs_run)
+            results = run(**kwargs_run)
     elif args.hyperparam == 'update_freq':
         for param in [4, 8, 16, 32, 64, 128]:
             print(f"{args.hyperparam}: {param}")
             kwargs_run[args.hyperparam] = param
-            run(**kwargs_run)
+            results = run(**kwargs_run)
     else:
-        run(**kwargs_run)
+        results = run(**kwargs_run)
         pass
 
     # Save results
-    # with open(str(args.dataset)+'acc_results.txt', 'a+') as f:
-    #     f.write(str(max_acc) + '\n')
+    import json
+    with open(PATH_RESULTS + str(args.logger)+'_results.json', 'w') as outfile:
+        json.dump(results, outfile)
 
     print("Completed!")
 

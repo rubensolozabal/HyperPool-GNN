@@ -1,0 +1,10 @@
+# Cora 
+Public split: https://paperswithcode.com/sota/node-classification-on-cora-with-public-split
+Full split: https://paperswithcode.com/sota/node-classification-on-cora-full-supervised
+Complete split: https://paperswithcode.com/sota/node-classification-on-cora
+
+# CiteSeer
+Public split: https://paperswithcode.com/sota/node-classification-on-citeseer-with-public
+
+#PubMed
+Public split: https://paperswithcode.com/sota/node-classification-on-pubmed-with-public

@@ -12,6 +12,7 @@ from tqdm import tqdm
 # Macro definition
 PATH_RUNS = "runs"
 
+
 def run(
     dataset, 
     model, 
@@ -21,21 +22,21 @@ def run(
     lr, 
     weight_decay, 
     early_stopping,  
-    logger, 
+    logger_name, 
     momentum,
     eps,
     update_freq,
     hyperparam,
     device
     ):
-    if logger is not None:
+    if logger_name is not None:
         if hyperparam:
-            logger += f"-{hyperparam}{eval(hyperparam)}"
-        path_logger = os.path.join(PATH_RUNS, logger)
+            logger_name += f"-{hyperparam}{eval(hyperparam)}"
+        path_logger = os.path.join(PATH_RUNS, logger_name)
         print(f"Path logger: {path_logger}")
 
         ut.empty_dir(path_logger)
-        logger = SummaryWriter(log_dir=os.path.join(PATH_RUNS, logger)) if logger is not None else None
+        logger = SummaryWriter(log_dir=os.path.join(PATH_RUNS, logger_name)) if logger_name is not None else None
 
     val_losses, accs, durations = [], [], []
 
@@ -51,12 +52,17 @@ def run(
                 lr=lr, 
                 weight_decay=weight_decay
             )
+            optimizer = torch.optim.Adam([
+            dict(params=model.convs.parameters(), weight_decay=0.01),
+            dict(params=model.lins.parameters(), weight_decay=5e-4)], lr=0.01)
+            
         elif str_optimizer == 'SGD':
             optimizer = torch.optim.SGD(
                 model.parameters(), 
                 lr=lr, 
                 momentum=momentum,
             )
+
 
         if torch.cuda.is_available():
             torch.cuda.synchronize()
@@ -107,11 +113,24 @@ def run(
     if logger is not None:
         logger.close()
     loss, acc, duration = tensor(val_losses), tensor(accs), tensor(durations)
+
+
+    results = {
+        'experiment': logger_name, 
+        'loss': loss.mean().item(),
+        'acc': acc.mean().item(),
+        'loss_std': loss.std().item(),
+        'acc_std': acc.std().item(),
+        'duration': duration.mean().item()
+    }
+
     print('Val Loss: {:.4f}, Test Accuracy: {:.2f} ± {:.2f}, Duration: {:.3f} \n'.
           format(loss.mean().item(),
                  100*acc.mean().item(),
                  100*acc.std().item(),
                  duration.mean().item()))
+    
+    return results
 
 def train(model, optimizer, data):
     model.train()

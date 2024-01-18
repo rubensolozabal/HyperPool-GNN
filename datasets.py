@@ -6,10 +6,10 @@ import torch_geometric.transforms as T
 
 
 
-def get_planetoid_dataset(name, normalize_features=False, transform=None, split="public"):
-    path = osp.join(osp.dirname(osp.realpath(__file__)), 'datasets', name)
+def get_planetoid_dataset(model_name, dataset, normalize_features=False, transform=None, split="public"):
+    path = osp.join(osp.dirname(osp.realpath(__file__)), 'datasets', dataset)
     if split == 'complete':
-        dataset = Planetoid(path, name)
+        dataset = Planetoid(path, dataset)
         dataset[0].train_mask.fill_(False)
         dataset[0].train_mask[:dataset[0].num_nodes - 1000] = 1
         dataset[0].val_mask.fill_(False)
@@ -17,7 +17,16 @@ def get_planetoid_dataset(name, normalize_features=False, transform=None, split=
         dataset[0].test_mask.fill_(False)
         dataset[0].test_mask[dataset[0].num_nodes - 500:] = 1
     else:
-        dataset = Planetoid(path, name, split=split)
+        dataset = Planetoid(path, dataset, split=split)
+
+
+    # Set PyG Transform according to model
+    if model_name == 'GCN2':
+            transform = T.Compose([#T.NormalizeFeatures(),   # Normalize data.x
+                            T.GCNNorm(),            # Create data.edge_weight
+                            T.ToSparseTensor()])    # Store edge_weight as sparse -> adj_t
+        
+    
     if transform is not None and normalize_features:
         dataset.transform = T.Compose([T.NormalizeFeatures(), transform])
     elif normalize_features:
@@ -25,6 +34,9 @@ def get_planetoid_dataset(name, normalize_features=False, transform=None, split=
     elif transform is not None:
         dataset.transform = transform
     return dataset
+
+
+
 
 
 if __name__ == '__main__':

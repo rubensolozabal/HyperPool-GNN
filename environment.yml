@@ -8,4 +8,5 @@ dependencies:
   - cudatoolkit
   - tensorboard
   - matplotlib
+  - mathutils
 

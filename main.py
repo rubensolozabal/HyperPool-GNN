@@ -15,7 +15,6 @@ from train_eval import run
 from models import get_model
 
 
-PATH_RESULTS = "results/"
 
 def main():
 
@@ -26,7 +25,7 @@ def main():
     parser.add_argument('--model', type=str, default='GCN')
     parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--runs', type=int, default=2)
+    parser.add_argument('--runs', type=int, default=5)
     parser.add_argument('--epochs', type=int, default=200)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--weight_decay', type=float, default=0.0005)
@@ -40,6 +39,10 @@ def main():
     parser.add_argument('--eps', type=float, default=0.01)
     parser.add_argument('--update_freq', type=int, default=50)
     parser.add_argument('--hyperparam', type=str, default=None)
+    parser.add_argument('--alpha', type=float, default=0)     # Uniformity parameter
+    parser.add_argument('--regularization', type=str, default=None)     # Regularization to apply
+    parser.add_argument('--hyperbolicity', type=float, default=0)     # Regularization parameter
+    parser.add_argument('--path_results', type=str, default="results/")
     args = parser.parse_args()
 
     # Set up seeds and gpu device
@@ -63,7 +66,8 @@ def main():
         'model_name': args.model,
         'dataset': dataset, 
         'hidden_dim': args.hidden, 
-        'dropout': args.dropout
+        'dropout': args.dropout,
+        'hyperbolicity': args.hyperbolicity,
     }
     model = get_model(**kwargs_model)
 
@@ -71,17 +75,7 @@ def main():
     kwargs_run = {
         'dataset': dataset, 
         'model': model,
-        'str_optimizer': args.optimizer, 
-        'runs': args.runs, 
-        'epochs': args.epochs, 
-        'lr': args.lr, 
-        'weight_decay': args.weight_decay, 
-        'early_stopping': args.early_stopping, 
-        'logger_name': args.logger, 
-        'momentum': args.momentum,
-        'eps': args.eps,
-        'update_freq': args.update_freq,
-        'hyperparam': args.hyperparam,
+        'args': args,
         'device': device,
     }
 
@@ -101,10 +95,8 @@ def main():
 
     # Save results
     import json
-    with open(PATH_RESULTS + str(args.logger)+'_results.json', 'w') as outfile:
+    with open(args.path_results + str(args.logger)+'_results.json', 'w') as outfile:
         json.dump(results, outfile)
-
-    print("Completed!")
 
 if __name__ == '__main__':
     main()

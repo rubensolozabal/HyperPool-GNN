@@ -5,13 +5,85 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "main",
+            "name": "GCN",
             "type": "python",
             "request": "launch",
             "program": "main.py",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["--dataset=Cora", "--split=public", "--model=GCN2","--optimizer=Adam", "--logger=GCN2-Cora-public-Adam"]
+            "args": ["--dataset=Cora", "--split=public", "--model=GCN","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "GAT",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=GAT","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "GIN",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=GIN","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "Spline",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=Spline","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "SAGE",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=SAGE","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "Transformer",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=Transformer","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "GCN2",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=GCN2","--optimizer=Adam", "--runs=1"]
+        },
+        {
+            "name": "HBPU",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=GCN2_HBPU","--optimizer=Adam", "--alpha=0.1", "--regularization=uniformity", "--runs=1"]
+        },
+        {
+            "name": "HLBP",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["--dataset=Cora", "--split=public", "--model=GCN2_HLBP","--optimizer=Adam", "--runs=1"]
         }
     ]
 }

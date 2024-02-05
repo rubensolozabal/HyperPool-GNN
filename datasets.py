@@ -21,11 +21,14 @@ def get_planetoid_dataset(model_name, dataset, normalize_features=False, transfo
 
 
     # Set PyG Transform according to model
-    if model_name == 'GCN2':
-            transform = T.Compose([#T.NormalizeFeatures(),   # Normalize data.x
+    if 'GCN2' in model_name:
+        transform = T.Compose([#T.NormalizeFeatures(),   # Normalize data.x
                             T.GCNNorm(),            # Create data.edge_weight
                             T.ToSparseTensor()])    # Store edge_weight as sparse -> adj_t
-        
+    elif 'Spline' in model_name:
+        transform = T.Compose([T.TargetIndegree()])
+    elif 'Transformer' in model_name:
+        transform = T.Constant(node_types='conference')
     
     if transform is not None and normalize_features:
         dataset.transform = T.Compose([T.NormalizeFeatures(), transform])
